@@ -1,0 +1,9 @@
+# Original artwork the game pictures were cut from (large, and includes licensed stock files)
+_source/
+
+# Local editor / assistant settings
+.claude/
+
+# OS clutter
+Thumbs.db
+.DS_Store

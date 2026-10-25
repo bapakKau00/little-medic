@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bantu Wira Kecil</title>
+  <meta name="description" content="Room 2: Playground - help your friend after a bicycle fall with basic first aid.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#1d0b45">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/room2.css">
+</head>
+<body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <!-- Drawings of the tools, reused by the station and the close-up -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="sym-water" viewBox="0 0 100 100">
+        <g stroke="#1a1033" stroke-width="3" stroke-linejoin="round">
+          <rect x="40" y="4" width="20" height="10" rx="3" fill="#2f6bff"/>
+          <path d="M42 14 h16 v8 q14 6 14 20 v46 q0 8 -8 8 h-28 q-8 0 -8 -8 v-46 q0 -14 14 -20 z" fill="#e6f8ff"/>
+          <path d="M30 52 h40 v36 q0 6 -6 6 h-28 q-6 0 -6 -6 z" fill="#5ec8ff" stroke="none"/>
+          <rect x="29" y="58" width="42" height="17" fill="#ffffff" stroke="none"/>
+          <path d="M50 60 q-6 8 0 13 q6 -5 0 -13" fill="#2f6bff" stroke="none"/>
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <header class="hud">
+    <a href="lobby.html" class="icon-btn exit-btn" id="exit-btn" data-i18n="hud.lobby">&#9664; LOBBY</a>
+    <div class="hud-item">
+      <span class="hud-label hi" data-i18n="hud.hiscore">HI-SCORE</span>
+      <span id="hiscore">000000</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label star" data-i18n="hud.stars">STARS</span>
+      <span id="stars-count">&#9733; 00</span>
+    </div>
+    <div class="hud-btns">
+      <button id="lang-btn" class="icon-btn" aria-label="Language / Bahasa">EN</button>
+      <button id="sound-btn" class="icon-btn" aria-pressed="true" aria-label="Toggle sound">&#9834; ON</button>
+    </div>
+  </header>
+
+  <main class="r2" id="r2">
+    <div class="scene-wrap" id="scene-wrap">
+      <!-- Scene 1: the accident video -->
+      <video id="vid" src="assets/video/fell-of-bike.mp4" playsinline preload="auto"></video>
+      <button class="skip-btn" id="skip-btn" hidden data-i18n="r2.skip">SKIP &#9654;&#9654;</button>
+
+      <!-- Scenes 2 & 3: close-up of the knee -->
+      <div class="closeup" id="closeup" hidden>
+        <img class="skin" src="assets/wound/skin.png" alt="">
+        <div class="wound" id="wound">
+          <img class="state on" data-state="bleeding" src="assets/wound/bleeding.png" alt="">
+          <img class="state" data-state="rinsed" src="assets/wound/dry-light.png" alt="">
+          <img class="state" data-state="dried" src="assets/wound/dry.png" alt="">
+          <img class="state" data-state="iodine" src="assets/wound/clean.png" alt="">
+          <img class="state" data-state="covered" src="assets/wound/covered.png" alt="">
+          <div class="glow" id="glow"><span class="pulse"></span><span class="ring" id="glow-ring"></span></div>
+          <svg class="fx" id="fx" viewBox="-50 -50 100 100" aria-hidden="true"></svg>
+        </div>
+      </div>
+
+      <!-- Helper's gloved hands (slide up after step 1) -->
+      <div class="hands" id="hands" aria-hidden="true">
+        <img class="hand l" src="assets/items/glove-l.png" alt="">
+        <img class="hand r" src="assets/items/glove-r.png" alt="">
+      </div>
+
+      <!-- Overlays -->
+      <div class="meter" id="meter" hidden>
+        <svg class="meter-face" viewBox="-40 -182 80 80" aria-hidden="true">
+          <circle cx="0" cy="-142" r="36" fill="#f5c49c" stroke="#1a1033" stroke-width="4"/>
+          <g id="face-cry" class="face">
+            <path d="M-20 -146 q7 6 14 0 M6 -146 q7 6 14 0" stroke="#1a1033" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <ellipse cx="0" cy="-122" rx="9" ry="8" fill="#8a1f2e"/>
+            <path d="M-18 -138 q-4 7 0 10 q4 -3 0 -10 M18 -138 q-4 7 0 10 q4 -3 0 -10" fill="#5ec8ff"/>
+          </g>
+          <g id="face-sad" class="face" style="display:none">
+            <circle cx="-12" cy="-145" r="4" fill="#1a1033"/><circle cx="12" cy="-145" r="4" fill="#1a1033"/>
+            <path d="M-10 -120 q10 -8 20 0" stroke="#1a1033" stroke-width="4" fill="none" stroke-linecap="round"/>
+          </g>
+          <g id="face-ok" class="face" style="display:none">
+            <circle cx="-12" cy="-145" r="4" fill="#1a1033"/><circle cx="12" cy="-145" r="4" fill="#1a1033"/>
+            <path d="M-9 -124 q9 6 18 0" stroke="#1a1033" stroke-width="4" fill="none" stroke-linecap="round"/>
+          </g>
+          <g id="face-happy" class="face" style="display:none">
+            <path d="M-18 -143 q6 -7 12 0 M6 -143 q6 -7 12 0" stroke="#1a1033" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M-14 -128 q14 17 28 0 z" fill="#8a1f2e" stroke="#1a1033" stroke-width="2"/>
+            <circle cx="-23" cy="-130" r="5" fill="#ff8fa3" opacity="0.7"/><circle cx="23" cy="-130" r="5" fill="#ff8fa3" opacity="0.7"/>
+          </g>
+        </svg>
+        <div class="meter-text">
+          <span class="meter-label" data-i18n="r2.happy">HAPPY</span>
+          <div class="meter-bar"><div class="meter-fill" id="meter-fill"></div></div>
+        </div>
+      </div>
+      <div class="banner" id="banner" hidden>
+        <span class="banner-step" id="banner-step"></span>
+        <span class="banner-goal" id="banner-goal"></span>
+      </div>
+      <div class="bubble" id="bubble" hidden></div>
+      <div class="toast" id="toast" hidden></div>
+
+      <div class="narrator" id="narrator" hidden>
+        <p id="narrator-text"></p>
+        <button class="btn" id="narrator-btn"></button>
+      </div>
+
+      <div class="card" id="intro-card">
+        <h1 class="card-title" data-i18n="r2.title">PLAYGROUND AREA</h1>
+        <p class="card-sub" data-i18n="r2.subtitle">HELP THE LITTLE HERO!</p>
+        <button class="btn" id="play-btn" data-i18n="r2.play">&#9654; PLAY</button>
+      </div>
+
+      <div class="card result" id="result-card" hidden>
+        <h2 class="card-title" data-i18n="r2.wellDone">WELL DONE!</h2>
+        <p class="result-stars" id="result-stars"></p>
+        <p class="result-mistakes" id="result-mistakes"></p>
+        <p class="remember" data-i18n="r2.remember">REMEMBER THE STEPS:</p>
+        <ol class="summary">
+          <li data-i18n="r2.sum1"></li>
+          <li data-i18n="r2.sum2"></li>
+          <li data-i18n="r2.sum3"></li>
+          <li data-i18n="r2.sum4"></li>
+          <li data-i18n="r2.sum5"></li>
+        </ol>
+        <p class="tell" data-i18n="r2.tell"></p>
+        <div class="card-btns">
+          <button class="btn" id="again-btn" data-i18n="r1.again">&#8635; PLAY AGAIN</button>
+          <button class="btn alt" id="lobby-btn" data-i18n="r1.lobby">&#9664; LOBBY</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- First aid station: items to drag -->
+    <aside class="tray" id="tray" aria-label="First aid station">
+      <h2 class="tray-title" data-i18n="r2.station">FIRST AID STATION</h2>
+      <div class="tools" id="tools"></div>
+    </aside>
+  </main>
+
+  <div class="crt" aria-hidden="true"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/room2.js"></script>
+</body>
+</html>

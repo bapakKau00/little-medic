@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kad Misteri</title>
+  <meta name="description" content="Room 3: Mystery cards - flip a card, name the first aid item and choose what it is used for.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#1d0b45">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/room3.css">
+</head>
+<body class="room3">
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <header class="hud">
+    <a href="lobby.html" class="icon-btn exit-btn" id="exit-btn" data-i18n="hud.lobby">&#9664; LOBBY</a>
+    <div class="hud-item">
+      <span class="hud-label hi" data-i18n="hud.hiscore">HI-SCORE</span>
+      <span id="hiscore">000000</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label star" data-i18n="hud.stars">STARS</span>
+      <span id="stars-count">&#9733; 00</span>
+    </div>
+    <div class="hud-btns">
+      <button id="lang-btn" class="icon-btn" aria-label="Language / Bahasa">EN</button>
+      <button id="sound-btn" class="icon-btn" aria-pressed="true" aria-label="Toggle sound">&#9834; ON</button>
+    </div>
+  </header>
+
+  <main class="r3">
+    <div class="board3" id="board3">
+      <!-- Floating shapes in the background -->
+      <div class="confetti" aria-hidden="true">
+        <span style="--x:6%;--y:18%;--c:#ffe14d;--d:7s"></span>
+        <span style="--x:92%;--y:12%;--c:#4dff88;--d:9s"></span>
+        <span style="--x:14%;--y:82%;--c:#3ef0ff;--d:8s"></span>
+        <span style="--x:86%;--y:78%;--c:#ff8fa3;--d:10s"></span>
+        <span style="--x:50%;--y:6%;--c:#ffffff;--d:11s"></span>
+        <span style="--x:48%;--y:94%;--c:#ffe14d;--d:9s"></span>
+      </div>
+
+      <div class="top3">
+        <div class="title3">
+          <h1 data-i18n="r3.title">REVIEW ACTIVITY</h1>
+          <p data-i18n="r3.subtitle">KNOW, REMEMBER AND UNDERSTAND!</p>
+        </div>
+        <div class="status3">
+          <div class="progress3">
+            <span id="progress-text"></span>
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+          </div>
+          <button class="fs-btn" id="fs-btn" aria-label="Full screen">&#x26F6;</button>
+        </div>
+      </div>
+
+      <div class="grid3" id="grid3"></div>
+
+      <!-- Intro -->
+      <div class="pop3" id="intro3">
+        <div class="panel3">
+          <h2 class="panel-title" data-i18n="r3.subtitle">KNOW, REMEMBER AND UNDERSTAND!</h2>
+          <ol class="how3">
+            <li data-i18n="r3.how1"></li>
+            <li data-i18n="r3.how2"></li>
+            <li data-i18n="r3.how3"></li>
+          </ol>
+          <button class="btn" id="start3" data-i18n="r3.start">&#9654; START</button>
+        </div>
+      </div>
+
+      <!-- Item function explanation (shown big for the whole class) -->
+      <div class="pop3" id="fn3" hidden>
+        <div class="panel3 fn-panel" role="dialog" aria-modal="true" aria-labelledby="fn-name">
+          <img id="fn-img" alt="">
+          <h2 class="fn-name" id="fn-name"></h2>
+          <p class="fn-label" data-i18n="r3.fn">ITEM FUNCTION</p>
+          <p class="fn-text" id="fn-text"></p>
+          <button class="btn" id="fn-close" data-i18n="r3.close">CLOSE</button>
+        </div>
+      </div>
+
+      <!-- All cards done -->
+      <div class="pop3" id="result3" hidden>
+        <div class="panel3">
+          <h2 class="panel-title" data-i18n="r3.done">WELL DONE!</h2>
+          <p class="result-line" data-i18n="r3.allDone"></p>
+          <div class="card-btns">
+            <button class="btn" id="again3" data-i18n="r1.again">&#8635; PLAY AGAIN</button>
+            <button class="btn alt" id="lobby3" data-i18n="r1.lobby">&#9664; LOBBY</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="crt" aria-hidden="true"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/room3.js"></script>
+</body>
+</html>

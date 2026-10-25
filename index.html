@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Little Medic</title>
+  <meta name="description" content="Little Medic - an arcade first aid adventure for kids.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#1d0b45">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Background layers -->
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="grid-floor" aria-hidden="true"></div>
+  <div class="sprites" id="sprites" aria-hidden="true"></div>
+
+  <!-- Arcade HUD -->
+  <header class="hud">
+    <div class="hud-item score">
+      <span class="hud-label">1UP</span>
+      <span>000000</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label hi" data-i18n="hud.hiscore">HI-SCORE</span>
+      <span id="hiscore">000000</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label star" data-i18n="hud.stars">STARS</span>
+      <span id="stars-count">&#9733; 00</span>
+    </div>
+    <div class="hud-btns">
+      <button id="lang-btn" class="icon-btn" aria-label="Language / Bahasa">EN</button>
+      <button id="sound-btn" class="icon-btn" aria-pressed="true" aria-label="Toggle sound">&#9834; ON</button>
+    </div>
+  </header>
+
+  <!-- Title screen -->
+  <main class="stage">
+    <div class="logo"><img id="logo-kit" alt=""></div>
+
+    <h1 class="title" aria-label="Little Medic">
+      <span class="line line-1" aria-hidden="true">LITTLE</span>
+      <span class="line line-2" aria-hidden="true">MEDIC</span>
+    </h1>
+    <p class="tagline" data-i18n="home.tagline">&#9733; FIRST AID ADVENTURE &#9733;</p>
+
+    <button id="press-start" class="press-start" data-i18n="home.pressStart">PRESS START</button>
+    <p class="hint" id="hint" data-i18n="home.hint">TAP OR PRESS ENTER</p>
+
+    <nav class="menu" id="menu" aria-label="Main menu" hidden>
+      <ul>
+        <li style="--n:0"><button class="menu-item" data-action="play" data-i18n="menu.play">START GAME</button></li>
+        <li style="--n:1"><button class="menu-item" data-action="how" data-i18n="menu.how">HOW TO PLAY</button></li>
+        <li style="--n:2"><button class="menu-item" data-action="settings" data-i18n="menu.settings">SETTINGS</button></li>
+      </ul>
+    </nav>
+  </main>
+
+  <footer class="footer">
+    <span>&copy; 2026 HEALTHKIT</span>
+    <span class="credit" data-i18n="footer.credit">CREDIT 01</span>
+  </footer>
+
+  <!-- Popup panel used by menu items -->
+  <div class="modal" id="modal" hidden>
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <h2 id="modal-title"></h2>
+      <div id="modal-body"></div>
+      <button class="btn" id="modal-close" data-i18n="back">&#9664; BACK</button>
+    </div>
+  </div>
+
+  <!-- CRT scanline overlay -->
+  <div class="crt" aria-hidden="true"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

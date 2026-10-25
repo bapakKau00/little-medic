@@ -1,0 +1,270 @@
+/* Lobby page: three doors that open on hover. Builds on style.css. */
+
+.lobby {
+  /* Door frames are 563 x 730 px. The closed door fills the left 59% of each frame;
+     the right part is space for the door to swing open into. */
+  --dw: clamp(110px, 22vw, 250px);
+  --dh: calc(var(--dw) * 730 / 563);
+  --sign-h: clamp(52px, 7vw, 64px);
+
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: clamp(4px, 2vh, 20px);
+  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.5, 0, 0.9, 0.5), opacity 0.6s ease-in;
+  animation: lobbyIn 0.6s ease-out backwards;
+}
+
+.lobby.zooming { transform: scale(4); opacity: 0; }
+
+/* ---------- Marquee title with chasing bulbs ---------- */
+
+.marquee {
+  position: relative;
+  max-width: calc(100% - 32px);
+  margin: 0 16px;
+  padding: 18px clamp(18px, 4vw, 36px);
+  background: #12062e;
+  border: 4px solid var(--yellow);
+  box-shadow: 0 0 0 4px var(--ink), 0 0 30px rgba(255, 225, 77, 0.4);
+}
+
+.marquee::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  pointer-events: none;
+  border: 6px dotted var(--yellow);
+  opacity: 0.85;
+  animation: chase 0.5s steps(2) infinite;
+}
+
+.lobby-title {
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  font-size: clamp(14px, 3.4vw, 30px);
+  color: var(--white);
+  text-shadow: 3px 3px 0 var(--red), 0 0 18px rgba(255, 59, 92, 0.8);
+}
+
+.cursor { color: var(--yellow); animation: blink 0.8s steps(1) infinite; }
+
+.lobby-hint {
+  margin-top: 14px;
+  font-size: clamp(18px, 2.4vw, 24px);
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.exit-btn { text-decoration: none; }
+
+/* ---------- Hall: wall, neon baseboard and checkered floor ---------- */
+
+.hall {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  margin-top: clamp(10px, 3vh, 28px);
+  padding: 0 16px 24px;
+  overflow: hidden;
+}
+
+/* Floor starts exactly where the doors stand. */
+.hall::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: calc(var(--sign-h) + 16px + var(--dh) * 0.889);
+  background:
+    linear-gradient(to bottom, rgba(11, 6, 32, 0.15), rgba(11, 6, 32, 0.9)),
+    repeating-conic-gradient(#2a1160 0 25%, #170838 0 50%) 0 0 / 48px 48px;
+  border-top: 4px solid var(--pink);
+  box-shadow: 0 -2px 18px rgba(255, 59, 139, 0.6);
+}
+
+.doors {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* Gap leaves room for each open door to swing right without hitting the next sign. */
+  gap: calc(var(--dw) * 0.5);
+  padding-right: calc(var(--dw) * 0.18);
+}
+
+/* ---------- One door ---------- */
+
+.door-slot {
+  position: relative;
+  width: calc(var(--dw) * 0.593);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sign {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--sign-h);
+  max-width: calc(var(--dw) * 1.05);
+  margin-bottom: 16px;
+  padding: 6px 10px;
+  font-family: var(--font-pixel);
+  font-size: clamp(8px, 1.15vw, 12px);
+  line-height: 1.5;
+  color: var(--glow);
+  background: rgba(11, 6, 32, 0.8);
+  border: 3px solid var(--glow);
+  border-radius: 8px;
+  text-shadow: 0 0 8px var(--glow);
+  box-shadow: 0 0 10px var(--glow), inset 0 0 10px var(--glow);
+  opacity: 0.45;
+  filter: saturate(0.6);
+  transition: opacity 0.2s, filter 0.2s;
+}
+
+.sign-num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.4em;
+  height: 2.4em;
+  font-size: 1.1em;
+  color: var(--ink);
+  background: var(--glow);
+  border-radius: 50%;
+  text-shadow: none;
+}
+
+.door-slot.is-open .sign {
+  opacity: 1;
+  filter: none;
+  animation: neonOn 0.35s steps(1);
+}
+
+.door {
+  position: relative;
+  display: block;
+  align-self: flex-start;
+  width: var(--dw);
+  height: var(--dh);
+  padding: 0;
+  margin-left: calc(var(--dw) * -0.007);
+  transition: transform 0.2s ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+.door:focus { outline: none; }
+.door:focus-visible .frame.on { filter: drop-shadow(0 0 6px var(--yellow)) drop-shadow(0 0 2px var(--yellow)); }
+.door-slot.is-open .door { transform: translateY(-4px); }
+
+.frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  image-rendering: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5));
+}
+.frame.on { visibility: visible; }
+
+/* The glowing room seen through the doorway. */
+.room {
+  position: absolute;
+  left: 5.7%;
+  top: 7.7%;
+  width: 49.4%;
+  height: 81.4%;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 85%, var(--glow) 0%, transparent 70%),
+    #12062e;
+  filter: brightness(0.6);
+  transition: filter 0.3s;
+}
+.door-slot.is-open .room { filter: none; }
+/* Light rays inside the room */
+.room::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: repeating-conic-gradient(from 0deg at 50% 60%, rgba(255, 255, 255, 0.14) 0 10deg, transparent 10deg 20deg);
+  animation: spin 8s linear infinite;
+}
+
+.room-item {
+  position: absolute;
+  left: 50%;
+  bottom: 22%;
+  width: 46%;
+  transform: translate(-50%, 30%) scale(0.4);
+  opacity: 0;
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+  transition: transform 0.35s cubic-bezier(0.3, 1.6, 0.5, 1) 0.1s, opacity 0.2s 0.1s;
+}
+.room-item.art {
+  width: 72%;
+  bottom: 14%;
+  image-rendering: auto;
+  /* Dark outline + shadow keeps full colour (a white glow made light pictures look faded) */
+  filter: drop-shadow(0 0 1.5px #1a1033) drop-shadow(0 6px 6px rgba(0, 0, 0, 0.45));
+}
+/* Hammer floats up and down while the door is open (uses `translate`, so it adds to the pop-up `transform`). */
+.door-slot.is-open .room-item.art { animation: hammerFloat 1.6s ease-in-out 0.45s infinite; }
+@keyframes hammerFloat {
+  0%, 100% { translate: 0 0; rotate: -4deg; }
+  50% { translate: 0 -12%; rotate: 4deg; }
+}
+.door-slot.is-open .room-item { transform: translate(-50%, 0) scale(1); opacity: 1; }
+
+/* Light spilling onto the floor in front of the doorway */
+.spill {
+  position: absolute;
+  left: 0;
+  top: 88.9%;
+  width: 61%;
+  height: 16%;
+  background: linear-gradient(to bottom, var(--glow), transparent);
+  clip-path: polygon(9% 0, 91% 0, 100% 100%, 0 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.door-slot.is-open .spill { opacity: 0.55; }
+
+.door-topic {
+  position: relative;
+  margin-top: 4px;
+  font-size: clamp(16px, 2vw, 22px);
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.door-slot.is-open .door-topic { color: var(--white); }
+
+/* ---------- Keyframes ---------- */
+
+@keyframes chase { to { transform: translateX(6px); } }
+@keyframes neonOn { 0% { opacity: 0.4; } 30% { opacity: 1; } 50% { opacity: 0.5; } 70% { opacity: 1; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes lobbyIn { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: none; } }
+
+@media (max-width: 600px) {
+  .lobby { --dw: clamp(84px, 24vw, 140px); }
+  .marquee { padding: 14px 16px; }
+  .lobby-title { font-size: clamp(12px, 4.2vw, 18px); line-height: 1.5; }
+  .sign { flex-direction: column; gap: 4px; font-size: 7px; padding: 4px 6px; }
+  .sign-num { width: 2em; height: 2em; }
+  .door-topic { white-space: normal; font-size: 16px; }
+}

@@ -1,0 +1,298 @@
+/* Room 3: Mystery cards. Builds on style.css. */
+
+.exit-btn { text-decoration: none; }
+
+/* The bright background covers the whole page (no framed box). */
+body.room3 {
+  background:
+    radial-gradient(circle at 12% 25%, rgba(255, 255, 255, 0.22) 0 7%, transparent 8%),
+    radial-gradient(circle at 88% 80%, rgba(255, 255, 255, 0.16) 0 9%, transparent 10%),
+    linear-gradient(135deg, #7b2ff7 0%, #c44dff 40%, #ff6fa8 75%, #ffb347 100%);
+  background-attachment: fixed;
+}
+body.room3 #stars { display: none; }
+body.room3 .hud { text-shadow: 2px 2px 0 var(--ink); }
+body.room3 .icon-btn { background: rgba(12, 6, 32, 0.85); }
+
+.r3 {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+}
+
+/* Bright, playful play area filling the window below the top bar.
+   Cards grow to fit: 4 across, 2 rows, limited by whichever runs out first (width or height). */
+.board3 {
+  --cw: min(320px, calc((100vw - 140px) / 4), calc((100dvh - 250px) / 2 * 0.75));
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px clamp(16px, 4vw, 40px) 24px;
+  overflow: hidden;
+}
+
+.confetti span {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c);
+  opacity: 0.55;
+  animation: drift3 var(--d) ease-in-out infinite alternate;
+}
+.confetti span:nth-child(even) { border-radius: 4px; transform: rotate(45deg); }
+@keyframes drift3 { from { transform: translate(0, 0) rotate(0); } to { transform: translate(30px, -26px) rotate(180deg); } }
+
+/* ---------- Title, score and progress ---------- */
+
+.top3 {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-bottom: 20px;
+}
+.title3 h1 {
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  font-size: clamp(14px, 2.2vw, 22px);
+  color: #fff;
+  text-shadow: 3px 3px 0 var(--ink);
+}
+.title3 p {
+  margin-top: 8px;
+  font-family: var(--font-pixel);
+  font-size: clamp(9px, 1.2vw, 12px);
+  color: var(--yellow);
+  text-shadow: 2px 2px 0 var(--ink);
+}
+.status3 { display: flex; align-items: center; gap: 14px; }
+.fs-btn {
+  padding: 6px 10px;
+  font-size: 22px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(12, 6, 32, 0.85);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+}
+.fs-btn:hover { color: var(--yellow); }
+.fs-btn:focus-visible { outline: 3px dashed #fff; outline-offset: 2px; }
+.progress3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  background: rgba(12, 6, 32, 0.85);
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+}
+.progress3 { flex-direction: column; align-items: stretch; gap: 6px; color: var(--cyan); }
+.progress-bar { width: 140px; height: 10px; background: #2a1650; border-radius: 6px; overflow: hidden; }
+.progress-fill { width: 0; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--green)); transition: width 0.5s ease; }
+
+/* ---------- Cards ---------- */
+
+.grid3 {
+  position: relative;
+  flex: 1;
+  align-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, var(--cw));
+  justify-content: center;
+  gap: 22px;
+}
+
+.card3 {
+  width: var(--cw);
+  aspect-ratio: 3 / 4;
+  perspective: 900px;
+  cursor: pointer;
+  animation: float3 3.2s ease-in-out infinite;
+  animation-delay: calc(var(--n) * -0.45s);
+  -webkit-tap-highlight-color: transparent;
+}
+.card3:focus { outline: none; }
+.card3:focus-visible .front { outline: 3px dashed #fff; outline-offset: 4px; }
+@keyframes float3 { 0%, 100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-8px) rotate(1deg); } }
+
+.card3-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.3, 1.3, 0.5, 1);
+}
+.card3.flipped .card3-inner { transform: rotateY(180deg); }
+.card3.flipped { cursor: default; }
+
+.face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  text-align: center;
+  border-radius: 16px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.front {
+  background: linear-gradient(160deg, #3a1d8a, #1d0b45);
+  border: 4px solid var(--cyan);
+  animation: glow3 1.8s ease-in-out infinite alternate;
+}
+.front:hover { border-color: var(--yellow); }
+@keyframes glow3 {
+  from { box-shadow: 0 0 6px rgba(62, 240, 255, 0.5), inset 0 0 10px rgba(62, 240, 255, 0.25); }
+  to { box-shadow: 0 0 22px rgba(62, 240, 255, 0.95), inset 0 0 18px rgba(62, 240, 255, 0.45); }
+}
+.qmark {
+  font-family: var(--font-pixel);
+  font-size: calc(var(--cw) * 0.38);
+  line-height: 1;
+  color: var(--yellow);
+  text-shadow: 4px 4px 0 var(--red), 0 0 18px rgba(255, 225, 77, 0.8);
+}
+.what { font-size: clamp(16px, calc(var(--cw) * 0.12), 22px); line-height: 1; color: #fff; }
+
+.back {
+  transform: rotateY(180deg);
+  justify-content: space-between;
+  background: #fff8e8;
+  color: var(--ink);
+  border: 4px solid var(--yellow);
+  box-shadow: 0 0 16px rgba(255, 225, 77, 0.7);
+}
+.back img { width: 82%; height: 46%; object-fit: contain; margin-top: 6px; }
+.item-name {
+  display: grid;
+  place-items: center;
+  min-height: 2.2em;
+  font-size: clamp(16px, calc(var(--cw) * 0.12), 26px);
+  line-height: 1;
+  color: var(--ink);
+  animation: pop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+.item-name[hidden] { display: none; }
+.name-btn {
+  width: 100%;
+  min-height: 2.2em;
+  padding: 8px 4px;
+  font-family: var(--font-pixel);
+  font-size: clamp(8px, calc(var(--cw) * 0.055), 14px);
+  line-height: 1.4;
+  color: var(--ink);
+  background: var(--cyan);
+  border-radius: 8px;
+  box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.2), 0 3px 0 var(--ink);
+}
+.name-btn[hidden] { display: none; }
+.name-btn:active { transform: translateY(2px); box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.2); }
+.name-btn:focus-visible { outline: 3px dashed var(--ink); outline-offset: 2px; }
+.fn-btn {
+  width: 100%;
+  padding: 8px 4px;
+  font-family: var(--font-pixel);
+  font-size: clamp(8px, calc(var(--cw) * 0.055), 14px);
+  line-height: 1.4;
+  color: #fff;
+  background: var(--pink);
+  border-radius: 8px;
+  box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.25), 0 3px 0 var(--ink);
+}
+.fn-btn:active { transform: translateY(2px); box-shadow: inset -3px -3px 0 rgba(0, 0, 0, 0.25); }
+.fn-btn:focus-visible { outline: 3px dashed var(--ink); outline-offset: 2px; }
+
+/* Answered cards get a badge */
+.badge3 {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: none;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  font-size: 22px;
+  color: #fff;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+}
+.card3.seen .badge3 { display: grid; background: #19c46a; }
+
+/* ---------- Popups (intro, item function, all done) ---------- */
+
+.pop3 {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(12, 6, 32, 0.55);
+}
+.pop3[hidden] { display: none; }
+body:has(.pop3:not([hidden])) .crt { display: none; }
+
+.panel3 {
+  width: min(560px, 100%);
+  max-height: 100%;
+  overflow: auto;
+  padding: 24px;
+  text-align: center;
+  color: #fff;
+  background: rgba(12, 6, 32, 0.95);
+  border: 4px solid var(--yellow);
+  border-radius: 16px;
+  box-shadow: 0 0 0 4px var(--ink), 0 0 30px rgba(255, 225, 77, 0.5);
+  animation: pop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+.panel-title {
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  font-size: clamp(13px, 2vw, 18px);
+  line-height: 1.5;
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--red);
+}
+.how3 { margin: 18px auto 4px; padding-left: 0; list-style: none; display: grid; gap: 8px; font-size: 24px; line-height: 1.1; }
+.panel3 .btn { font-size: 13px; padding: 14px 20px; }
+.btn.alt { background: #3a2a7a; }
+.card-btns { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; }
+
+/* Item function: large so the whole class can read it from a projector */
+.fn-panel { width: min(820px, 100%); padding: 28px 32px; }
+.fn-panel img { display: block; width: min(260px, 50%); height: min(200px, 26vh); margin: 0 auto; object-fit: contain; }
+.fn-name {
+  margin-top: 14px;
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  font-size: clamp(16px, 2.6vw, 28px);
+  line-height: 1.4;
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 var(--red);
+}
+.fn-label { margin-top: 16px; font-family: var(--font-pixel); font-size: clamp(10px, 1.3vw, 14px); color: var(--cyan); }
+.fn-text { margin-top: 8px; font-size: clamp(28px, 3.6vw, 46px); line-height: 1.1; color: #fff; }
+
+.result-line { margin-top: 12px; font-size: 28px; line-height: 1.1; }
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 700px) {
+  .board3 { --cw: min(200px, calc((100vw - 80px) / 2)); padding: 16px 14px 22px; }
+  .grid3 { grid-template-columns: repeat(2, var(--cw)); gap: 16px; }
+  .progress-bar { width: 100px; }
+}

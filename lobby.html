@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Little Medic Lobby</title>
+  <meta name="description" content="Little Medic - choose a room to play.">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#1d0b45">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/lobby.css">
+</head>
+<body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <!-- Arcade HUD -->
+  <header class="hud">
+    <a href="index.html#menu" class="icon-btn exit-btn" id="exit-btn" data-i18n="hud.exit">&#9664; EXIT</a>
+    <div class="hud-item">
+      <span class="hud-label hi" data-i18n="hud.hiscore">HI-SCORE</span>
+      <span id="hiscore">000000</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label star" data-i18n="hud.stars">STARS</span>
+      <span id="stars-count">&#9733; 00</span>
+    </div>
+    <div class="hud-btns">
+      <button id="lang-btn" class="icon-btn" aria-label="Language / Bahasa">EN</button>
+      <button id="sound-btn" class="icon-btn" aria-pressed="true" aria-label="Toggle sound">&#9834; ON</button>
+    </div>
+  </header>
+
+  <!-- Lobby -->
+  <main class="lobby" id="lobby">
+    <div class="marquee">
+      <h1 class="lobby-title"><span data-i18n="lobby.title">CHOOSE A ROOM</span><span class="cursor">_</span></h1>
+    </div>
+    <p class="lobby-hint" id="lobby-hint"></p>
+
+    <div class="hall">
+      <div class="doors" id="doors"></div>
+    </div>
+  </main>
+
+  <!-- CRT scanline overlay -->
+  <div class="crt" aria-hidden="true"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/lobby.js"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 140" width="100" height="140">
+  <!-- Same hammer as the one players swing in Room 1 (room1.html) -->
+  <rect x="44" y="40" width="12" height="96" rx="5" fill="#d9a05b" stroke="#1a1033" stroke-width="3"/>
+  <rect x="47" y="46" width="3" height="84" fill="#f3c98b"/>
+  <rect x="10" y="8" width="80" height="40" rx="10" fill="#ff3b5c" stroke="#1a1033" stroke-width="3"/>
+  <rect x="24" y="9.5" width="10" height="37" fill="#ffe14d"/>
+  <rect x="66" y="9.5" width="10" height="37" fill="#ffe14d"/>
+  <rect x="14" y="13" width="72" height="6" rx="3" fill="#ffffff" opacity="0.45"/>
+  <ellipse cx="10" cy="28" rx="6" ry="20" fill="#c21f45" stroke="#1a1033" stroke-width="3"/>
+  <ellipse cx="90" cy="28" rx="6" ry="20" fill="#c21f45" stroke="#1a1033" stroke-width="3"/>
+</svg>

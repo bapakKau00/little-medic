@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pukulan Kilat</title>
+  <meta name="description" content="Room 1: Pukulan Kilat - whack the first aid items, avoid the mice!">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+  <meta name="theme-color" content="#1d0b45">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/room1.css">
+</head>
+<body>
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <header class="hud">
+    <a href="lobby.html" class="icon-btn exit-btn" id="exit-btn" data-i18n="hud.lobby">&#9664; LOBBY</a>
+    <div class="hud-item">
+      <span class="hud-label hi" data-i18n="hud.hiscore">HI-SCORE</span>
+      <span id="hiscore">000000</span>
+    </div>
+    <div class="hud-item">
+      <span class="hud-label star" data-i18n="hud.stars">STARS</span>
+      <span id="stars-count">&#9733; 00</span>
+    </div>
+    <div class="hud-btns">
+      <button id="lang-btn" class="icon-btn" aria-label="Language / Bahasa">EN</button>
+      <button id="sound-btn" class="icon-btn" aria-pressed="true" aria-label="Toggle sound">&#9834; ON</button>
+    </div>
+  </header>
+
+  <main class="room-stage">
+    <div class="machine" id="machine">
+      <!-- Top sign between the two pillars -->
+      <div class="top">
+        <div class="pillar left"></div>
+        <div class="pillar right"></div>
+        <div class="sign"><span>PUKULAN KILAT</span></div>
+      </div>
+
+      <!-- Play board with holes (holes are added by room1.js) -->
+      <div class="board-wrap" id="board">
+        <div class="board-rim"></div>
+        <div class="board"></div>
+        <div class="combo" id="combo" hidden></div>
+      </div>
+      <div class="lip"></div>
+
+      <!-- Front panel -->
+      <div class="front">
+        <div class="led"><span class="led-label" data-i18n="led.score">SCORE</span><span class="led-value" id="score-led">000</span></div>
+        <div class="mini-screen"><span data-i18n="coin.1">INSERT</span><span data-i18n="coin.2">COIN</span></div>
+        <div class="led"><span class="led-label" data-i18n="led.time">TIME</span><span class="led-value" id="time-led">45</span></div>
+        <div class="arcade-btns" aria-hidden="true"><span></span><span></span></div>
+        <div class="led"><span class="led-label" data-i18n="led.best">BEST</span><span class="led-value" id="best-led">000</span></div>
+      </div>
+
+      <!-- Popup 1: meet the items -->
+      <div class="screen" id="intro-screen">
+        <h1 class="screen-title">PUKULAN KILAT</h1>
+        <p class="screen-sub" data-i18n="r1.sub">ADAKAH ANDA TANGKAS?</p>
+        <p class="intro-lead" data-i18n="r1.lead"></p>
+        <div class="item-cards" id="item-cards"></div>
+        <button class="btn" id="next-btn" data-i18n="r1.next">NEXT &#9654;</button>
+      </div>
+
+      <!-- Popup 2: how to play + difficulty -->
+      <div class="screen" id="start-screen" hidden>
+        <h2 class="screen-title" data-i18n="r1.howTitle">HOW TO PLAY</h2>
+        <div class="rules">
+          <div class="rule" data-i18n-html="r1.ruleGood"></div>
+          <div class="rule" data-i18n-html="r1.ruleBad"></div>
+          <div class="rule" data-i18n-html="r1.ruleCombo"></div>
+          <div class="rule" data-i18n-html="r1.ruleTime"></div>
+        </div>
+        <p class="diff-label" data-i18n="r1.chooseLevel">CHOOSE A LEVEL</p>
+        <div class="diffs" role="radiogroup">
+          <button class="diff-btn" data-diff="easy" role="radio" data-i18n="diff.easy">EASY</button>
+          <button class="diff-btn" data-diff="normal" role="radio" data-i18n="diff.normal">NORMAL</button>
+          <button class="diff-btn" data-diff="hard" role="radio" data-i18n="diff.hard">HARD</button>
+        </div>
+        <div class="result-btns">
+          <button class="btn alt" id="back-btn" data-i18n="back">&#9664; BACK</button>
+          <button class="btn" id="start-btn" data-i18n="r1.start">&#9654; START</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="screen" id="result-screen" hidden>
+        <h2 class="screen-title" data-i18n="r1.timeUp">TIME UP!</h2>
+        <p class="result-stars" id="result-stars"></p>
+        <p class="result-score"><span data-i18n="r1.score">SCORE</span> <span class="num" id="result-score">0</span></p>
+        <p class="result-new" id="result-new" data-i18n="r1.newBest" hidden>NEW BEST!</p>
+        <ul class="result-stats" id="result-stats"></ul>
+        <p class="result-fact" id="result-fact"></p>
+        <div class="result-btns">
+          <button class="btn" id="again-btn" data-i18n="r1.again">&#8635; PLAY AGAIN</button>
+          <button class="btn alt" id="lobby-btn" data-i18n="r1.lobby">&#9664; LOBBY</button>
+        </div>
+      </div>
+
+      <div class="countdown" id="countdown" aria-live="assertive"></div>
+    </div>
+  </main>
+
+  <!-- Hammer that follows the pointer -->
+  <div class="aim" id="aim" aria-hidden="true"></div>
+  <div class="hammer" id="hammer" aria-hidden="true">
+    <div class="hammer-body">
+      <svg viewBox="0 0 100 140" width="100%" height="100%">
+        <rect x="44" y="40" width="12" height="96" rx="5" fill="#d9a05b" stroke="#1a1033" stroke-width="3"/>
+        <rect x="47" y="46" width="3" height="84" fill="#f3c98b"/>
+        <rect x="10" y="8" width="80" height="40" rx="10" fill="#ff3b5c" stroke="#1a1033" stroke-width="3"/>
+        <rect x="24" y="9.5" width="10" height="37" fill="#ffe14d"/>
+        <rect x="66" y="9.5" width="10" height="37" fill="#ffe14d"/>
+        <rect x="14" y="13" width="72" height="6" rx="3" fill="#ffffff" opacity="0.45"/>
+        <ellipse cx="10" cy="28" rx="6" ry="20" fill="#c21f45" stroke="#1a1033" stroke-width="3"/>
+        <ellipse cx="90" cy="28" rx="6" ry="20" fill="#c21f45" stroke="#1a1033" stroke-width="3"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="crt" aria-hidden="true"></div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/room1.js"></script>
+</body>
+</html>
